@@ -15,9 +15,9 @@ namespace AplicationCore.Models
         [Required]
         [StringLength(255, MinimumLength = 3)]
         public string Direction { get; set; }
-        [Range(1, int.MaxValue, ErrorMessage = "Value must be greater than zero.")]
-        public decimal Latitude { get; set; }
-        [Range(1, int.MaxValue, ErrorMessage = "Value must be greater than zero.")]
-        public decimal Longitude { get; set; }
+        [Required]
+        public double Latitude { get; set; }
+        [Required]
+        public double Longitude { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 
 using AplicationCore.Interfaces;
 using AplicationCore.Models;
+using AplicationCore.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,7 @@ namespace Verifarme.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GeyAsync(long id)
+        public async Task<IActionResult> GeyAsync(string id)
         {       
             var result = await command_.GetAsync(id);
             return result!=null

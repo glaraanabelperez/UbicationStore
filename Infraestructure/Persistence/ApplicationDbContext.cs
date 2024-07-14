@@ -14,9 +14,9 @@ namespace Abrazos.Persistence.Database
         protected override void ModelConfig(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<StoreEntity>().HasData(
-               new StoreEntity { StoreId = 1, Name = "Farmacia cerca", Coordinates = new Point(-58.5221 ,- 34.62572 ) { SRID = 4326 } },
-               new StoreEntity { StoreId = 2, Name = "Farmacia lejos 1", Coordinates = new Point(-58.39228 ,- 34.62541) { SRID = 4326 } },
-               new StoreEntity { StoreId = 2, Name = "Farmacia lejos", Coordinates = new Point(-58.48857, -34.64707) { SRID = 4326 } }
+               new StoreEntity { StoreId = "1Abhgfg", Name = "Farmacia cerca", Coordinates = new Point(-58.5221 ,- 34.62572 ) { SRID = 4326 } },
+               new StoreEntity { StoreId = "1Abhghb", Name = "Farmacia lejos 1", Coordinates = new Point(-58.39228 ,- 34.62541) { SRID = 4326 } },
+               new StoreEntity { StoreId = "1Abhghu", Name = "Farmacia lejos", Coordinates = new Point(-58.48857, -34.64707) { SRID = 4326 } }
            ); 
             modelBuilder.UseCollation("Modern_Spanish_CI_AS"); 
             modelBuilder.ApplyConfiguration(new StoreConfiguration());

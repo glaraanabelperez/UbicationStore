@@ -2,27 +2,49 @@
 using AplicationCore.Interfaces;
 using AplicationCore.Models;
 using AplicationCore.Utils;
-using Microsoft.AspNetCore.Mvc;
+using Infraestructure.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using NetTopologySuite.Geometries;
 using NetTopologySuite.IO;
+using System.Collections.Generic;
 
 namespace AplicationCore.Servicios
 {
     public class StoreService : IStoreService
     {
         public readonly ApplicationDbContext dbContext;
-        private readonly GeoJsonWriter geojson;
-        public StoreService(ApplicationDbContext dbContext_, GeoJsonWriter geojson_) { 
+        private readonly ILogger _logger;
+        private IResultApp result;
+
+        public StoreService(ApplicationDbContext dbContext_, IResultApp _result, ILogger<StoreService> logger ) { 
             dbContext = dbContext_;
-            geojson= geojson_;
+            _logger= logger;
+            result = _result;
         }
-        public Task<StoreDto> GetAsync(long Id)
+        public async Task<ResultApp> GetAsync(string Id)
         {
-            throw new NotImplementedException();
+            var store =  dbContext.Store
+                    .SingleOrDefault(l => l.StoreId.Equals(Id));
+
+            if(store != null)
+            {
+                var storeEntity =  new StoreDto()
+                {
+                    StoreId = store.StoreId,
+                    Name = store.Name,
+                    Coordinates = store.Coordinates.ToString()
+                };
+                result.Send(true, null, null, storeEntity);
+                return result.GetResult();
+            }
+
+            result.Send(false, "No se encontraron resultados", null, null);
+            return result.GetResult();
+
         }
 
-        public async Task<List<StoreDto>> GetNearbyStorsAsync(double latitude, double longitude, double distanceInMeters)
+        public async Task<ResultApp> GetNearbyStorsAsync(double latitude, double longitude, double distanceInMeters)
         {
             var point = new Point(longitude, latitude) { SRID = 4326 };
             var nearbyStores = await dbContext.Store
@@ -35,6 +57,8 @@ namespace AplicationCore.Servicios
                         Distance = l.Coordinates.Distance(point) // In meters
                     })
             .ToListAsync();
+
+            _logger.LogInformation("Test");
 
             List<StoreDto> list = new List<StoreDto>();
             
@@ -49,13 +73,33 @@ namespace AplicationCore.Servicios
                 };
                 list.Add(st);
             };
-            return list;
+            result.Send(false, "Resultados no encontrados", null,list);
+            return result.GetResult();
 
         }
 
-        Task<ResultApp> IStoreService.AddStore(StoreCommand store)
+        public async Task<ResultApp> AddStore(StoreCommand store)
         {
-            throw new NotImplementedException();
+            ResultApp result = new ResultApp();
+
+            dbContext.Store.Add(mapToStore(store));
+            await dbContext.SaveChangesAsync();
+
+            result.Send(true, "Resultados Guardados", null, null);
+            return result.GetResult();
+        }
+
+        public StoreEntity mapToStore(StoreCommand store)
+        {
+            var point = new Point(store.Longitude, store.Latitude) { SRID = 4326 };
+
+            StoreEntity newStore = new StoreEntity()
+            {
+                StoreId = GenerateRandomText.GenerateRandom(),
+                Name = store.Name,
+                Coordinates = point
+            };
+            return newStore;
         }
     }
 }

@@ -3,8 +3,10 @@
 using Abrazos.Persistence.Database;
 using AplicationCore.Interfaces;
 using AplicationCore.Servicios;
+using AplicationCore.Utils;
 using Microsoft.EntityFrameworkCore;
 using NetTopologySuite.IO;
+using Serilog;
 using Utils.Exception;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,6 +42,8 @@ builder.Services.AddTransient<StoreDbContext, ApplicationDbContext>();
 
 builder.Services.AddTransient<IStoreService, StoreService>();
 
+builder.Services.AddTransient<IResultApp, ResultApp>();
+
 builder.Services.AddSingleton<GeoJsonWriter>();
 
 
@@ -58,6 +62,7 @@ string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
 
+builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddControllers().AddJsonOptions(options =>

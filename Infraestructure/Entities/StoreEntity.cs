@@ -5,7 +5,7 @@ namespace Infraestructure.Entities
 {
     public class StoreEntity
     {
-        public long StoreId { get; set; }
+        public string StoreId { get; set; }
         public string Name { get; set; }
         public Point Coordinates { get; set; }
 

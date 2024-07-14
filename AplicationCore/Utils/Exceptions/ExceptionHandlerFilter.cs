@@ -9,15 +9,19 @@ namespace Utils.Exception
 {
     public class ExceptionHandlerFilter : IExceptionFilter, IFilterMetadata
     {
+        private IResultApp result;
+
+        public ExceptionHandlerFilter(IResultApp result)
+        {
+            this.result = result;
+        }
         public void OnException(ExceptionContext context)
         {
-
             //No Content
             if (context.Exception.Message.Contains("no contains elements"))
             {
-                var Result = new ResultApp();
-                    Result.message = "No Content";
-                context.Result = new ObjectResult(Result)
+                result.Send(false, "No Content", null, null);
+                context.Result = new ObjectResult(result.GetResult())
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
@@ -31,7 +35,8 @@ namespace Utils.Exception
                 else
                     ErrorResult.tittle = "Aplication";
                 ErrorResult.status = context.HttpContext.Response.StatusCode.ToString();
-                context.Result = new ObjectResult(ErrorResult)
+                result.Send(false, "Error", ErrorResult, null);
+                context.Result = new ObjectResult(result.GetResult())
                 {
                     StatusCode = (int)HttpStatusCode.BadRequest
                 };
