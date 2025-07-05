@@ -1,4 +1,4 @@
-# Verifarma
+# Verifarma .Net
 Servicio WebAPI para un CRUD (únicamente creación y lectura
 por id) de la entidad Farmacia y la consulta de la farmacia más cercana a un punto dado.
 
